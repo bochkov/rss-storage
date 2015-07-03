@@ -1,0 +1,4 @@
+<jboss-web>
+	<virtual-host>rss.sergeybochkov.com</virtual-host>
+	<context-root>/</context-root>
+</jboss-web>
