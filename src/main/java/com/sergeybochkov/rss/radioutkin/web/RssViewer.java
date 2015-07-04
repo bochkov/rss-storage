@@ -1,7 +1,8 @@
 package com.sergeybochkov.rss.radioutkin.web;
 
+import com.rometools.rome.feed.atom.*;
 import com.sergeybochkov.rss.radioutkin.domain.Qa;
-import com.sun.syndication.feed.atom.*;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.feed.AbstractAtomFeedView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+@Component(value = "radioutkin_rss")
 public class RssViewer extends AbstractAtomFeedView {
 
     @Override

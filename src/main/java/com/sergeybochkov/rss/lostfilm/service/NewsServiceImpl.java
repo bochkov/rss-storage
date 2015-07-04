@@ -2,12 +2,14 @@ package com.sergeybochkov.rss.lostfilm.service;
 
 import com.sergeybochkov.rss.lostfilm.dao.NewsDao;
 import com.sergeybochkov.rss.lostfilm.domain.News;
+import org.apache.log4j.Logger;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,16 +31,25 @@ public class NewsServiceImpl implements NewsService {
     private static final String url = "http://www.lostfilm.tv";
     private static final String userAgent = "Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0";
 
+    private static final Logger logger = Logger.getLogger(NewsServiceImpl.class.getName());
+
     @Transactional
+    @Scheduled(cron="0 0 * * * ?")
     public void download() throws IOException, ParseException {
+
+        logger.info("Starting spawn");
+
         Connection.Response response = Jsoup.connect(url)
                 .userAgent(userAgent)
                 .execute();
         if (response.statusCode() != 200)
-            System.out.println("Сервис недоступен");
+            logger.warn("Сервис недоступен");
 
         Document doc = response.parse();
         Element contentBody = doc.getElementsByClass("content_body").get(0);
+
+        int created = 0;
+        int dropped = 0;
 
         for (Element element : contentBody.getElementsByTag("h1")) {
             News news = new News();
@@ -69,7 +80,7 @@ public class NewsServiceImpl implements NewsService {
             Document fullNews = Jsoup.connect(news.getUrl())
                     .userAgent(userAgent)
                     .get();
-            String html = "";
+            String html;
             Element body = fullNews.getElementsByClass("content_body").get(0);
             body.getElementsByAttributeValueContaining("style", "display:block").remove();
             html = body.html();
@@ -84,10 +95,16 @@ public class NewsServiceImpl implements NewsService {
                 articleId = Integer.parseInt(matcher.group(1));
             news.setArticleId(articleId);
 
-            if (!newsDao.exists(news))
+            if (!newsDao.exists(news)) {
                 newsDao.save(news);
+                ++created;
+            }
+            else
+                ++dropped;
         }
 
+        logger.info("Saved " + created + " elements");
+        logger.info("Dropped " + dropped + " elements");
     }
 
     @Override

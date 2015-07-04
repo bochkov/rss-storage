@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface PostService {
 
-    public List<Post> getLatest();
+    List<Post> getLatest();
 }

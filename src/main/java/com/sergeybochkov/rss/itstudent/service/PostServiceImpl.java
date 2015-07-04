@@ -2,6 +2,7 @@ package com.sergeybochkov.rss.itstudent.service;
 
 import com.sergeybochkov.rss.itstudent.dao.PostDao;
 import com.sergeybochkov.rss.itstudent.domain.Post;
+import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -21,6 +23,8 @@ public class PostServiceImpl implements PostService {
 
     private static final String url = "http://it-students.net";
 
+    private static final Logger logger = Logger.getLogger(PostServiceImpl.class.getName());
+
     @Override
     public List<Post> getLatest() {
         return postDao.getLatest();
@@ -28,6 +32,9 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     public void download() throws IOException {
+
+        logger.info("Starting spawn");
+
         Document doc = Jsoup.connect(url)
                 .userAgent("Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0")
                 .followRedirects(true)
@@ -35,11 +42,30 @@ public class PostServiceImpl implements PostService {
         Element mainBlock = doc.getElementById("block-system-main");
         Elements elements = mainBlock.getElementsByClass("views-row");
         Collections.reverse(elements);
-        for (Element element : elements)
-            handlePost(element);
+
+        int created = 0;
+        int dropped = 0;
+
+        for (Element elem : elements) {
+            short res = handlePost(elem);
+            switch (res) {
+                case POST_CREATED:
+                    ++created;
+                    break;
+                case POST_DROPPED:
+                    ++dropped;
+                    break;
+            }
+        }
+
+        logger.info("Saved " + created + " elements");
+        logger.info("Dropped " + dropped + " elements");
     }
 
-    private void handlePost(Element element){
+    private static final short POST_CREATED = 10;
+    private static final short POST_DROPPED = 20;
+
+    private short handlePost(Element element){
         Element elem = element.getElementsByTag("h2").get(0);
         String link = elem.child(0).attr("href");
         if (postDao.findByUrl(url + link) == null) {
@@ -49,8 +75,7 @@ public class PostServiceImpl implements PostService {
 
             ArrayList<String> tags = new ArrayList<>();
             if (elem.children().size() > 0)
-                for (Element e : elems.get(0).children())
-                    tags.add(e.text());
+                tags.addAll(elems.get(0).children().stream().map(Element::text).collect(Collectors.toList()));
 
             String text = "";
             if (elems.size() > 1)
@@ -65,7 +90,9 @@ public class PostServiceImpl implements PostService {
             post.setTimestamp(System.currentTimeMillis());
 
             postDao.add(post);
+            return POST_CREATED;
         }
+        return POST_DROPPED;
     }
 
     public void clean() {

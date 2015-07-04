@@ -7,17 +7,17 @@ import java.util.List;
 
 public interface QaDao {
 
-    public void save(Qa qa);
+    void save(Qa qa);
 
-    public Qa get(String id);
+    Qa get(String id);
 
-    public List<Qa> getAll();
+    List<Qa> getAll();
 
-    public void remove(String id);
+    void remove(String id);
 
-    public List<Qa> getLatest();
+    List<Qa> getLatest();
 
-    public boolean find(Qa qa);
+    boolean find(Qa qa);
 
-    public void removeOldest(Date than);
+    void removeOldest(Date than);
 }

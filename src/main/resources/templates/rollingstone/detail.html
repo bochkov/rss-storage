@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Рецензии RollingStone.Ru</title>
+    <link rel="icon" type="image/ico" href="@{/favicons/rs.ico}" />
+    <link rel="stylesheet" type="text/css" href="http://yandex.st/bootstrap/3.1.1/css/bootstrap.min.css"/>
+</head>
+<body>
+
+<div class="container">
+    <div class="col-md-8 col-md-offset-2">
+        <h2 class="page-header">Рецензии RollingStone.Ru</h2>
+        <div class="text-justify" th:each="rev : ${objects}">
+            <h4><a th:href="${rev.url}" th:text="${rev.title}"></a>
+                <small class="pull-right" th:text="inline">[[${rev.author}]], [[${dates.format(rev.date, 'dd.MM.yyyy')}]]</small>
+            </h4>
+            <p th:utext="${rev.text}"></p>
+            <hr/>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

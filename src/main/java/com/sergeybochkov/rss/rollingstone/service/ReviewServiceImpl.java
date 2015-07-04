@@ -2,11 +2,13 @@ package com.sergeybochkov.rss.rollingstone.service;
 
 import com.sergeybochkov.rss.rollingstone.dao.ReviewDao;
 import com.sergeybochkov.rss.rollingstone.domain.Review;
+import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,8 @@ import java.util.List;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
+
+    private static final Logger logger = Logger.getLogger(ReviewServiceImpl.class.getName());
 
     @Autowired
     private ReviewDao reviewDao;
@@ -66,7 +70,12 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Transactional
+    @Scheduled(cron="0 0 */3 * * ?")
     public void download() throws Exception {
+        int created = 0;
+        int dropped = 0;
+        logger.info("Starting spawn");
+
         Document doc = Jsoup.connect("http://rollingstone.ru/review/")
                 .userAgent("Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0")
                 .followRedirects(true)
@@ -95,8 +104,14 @@ public class ReviewServiceImpl implements ReviewService {
                 rev.setText(text);
 
                 add(rev);
+                ++created;
             }
+            else
+                ++dropped;
         }
+
+        logger.info("Created " + created + " elements");
+        logger.info("Dropped " + dropped + " elements");
     }
 
     @Override

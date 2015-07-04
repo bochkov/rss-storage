@@ -2,6 +2,7 @@ package com.sergeybochkov.rss.itstudent.web;
 
 import com.sergeybochkov.rss.itstudent.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -13,6 +14,9 @@ public class PostController {
 
     @Autowired
     private PostService postService;
+    @Autowired
+    @Qualifier(value = "itstudents_rss")
+    private RssViewer rssViewer;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index(){
@@ -23,7 +27,7 @@ public class PostController {
 
     @RequestMapping(value = "/rss/", method = RequestMethod.GET)
     public ModelAndView rss(){
-        ModelAndView modelAndView = new ModelAndView("it_rss");
+        ModelAndView modelAndView = new ModelAndView(rssViewer);
         modelAndView.addObject("feed", postService.getLatest());
         return modelAndView;
     }

@@ -1,11 +1,8 @@
 package com.sergeybochkov.rss.lostfilm.web;
 
+import com.rometools.rome.feed.atom.*;
 import com.sergeybochkov.rss.lostfilm.domain.News;
-import com.sergeybochkov.rss.radioutkin.domain.Qa;
-import com.sun.syndication.feed.atom.Content;
-import com.sun.syndication.feed.atom.Entry;
-import com.sun.syndication.feed.atom.Feed;
-import com.sun.syndication.feed.atom.Link;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.feed.AbstractAtomFeedView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+@Component(value = "lostfilm_rss")
 public class RssViewer extends AbstractAtomFeedView {
 
     @Override

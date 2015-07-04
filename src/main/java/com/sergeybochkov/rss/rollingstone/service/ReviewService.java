@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface ReviewService {
 
-    public List<Review> getLatest();
+    List<Review> getLatest();
 
-    public Review find(String id);
+    Review find(String id);
 
-    public void add(Review review);
+    void add(Review review);
 }

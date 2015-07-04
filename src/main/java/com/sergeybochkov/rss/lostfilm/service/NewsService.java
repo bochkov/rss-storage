@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface NewsService {
 
-    public List<News> getLatest();
+    List<News> getLatest();
 }

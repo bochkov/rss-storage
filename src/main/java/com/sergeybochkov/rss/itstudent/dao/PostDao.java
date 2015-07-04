@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface PostDao {
 
-    public List<Post> getLatest();
+    List<Post> getLatest();
 
-    public Post findByUrl(String url);
+    Post findByUrl(String url);
 
-    public void add(Post post);
+    void add(Post post);
 }

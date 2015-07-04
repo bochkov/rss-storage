@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface NewsDao {
 
-    public void save(News news);
+    void save(News news);
 
-    public List<News> getLatest();
+    List<News> getLatest();
 
-    public boolean exists(News news);
+    boolean exists(News news);
 }

@@ -6,11 +6,11 @@ import java.util.List;
 
 public interface QaService {
 
-    public void add(Qa qa);
+    void add(Qa qa);
 
-    public Qa get(String id);
+    Qa get(String id);
 
-    public List<Qa> getLatest();
+    List<Qa> getLatest();
 
-    public boolean find(Qa qa);
+    boolean find(Qa qa);
 }

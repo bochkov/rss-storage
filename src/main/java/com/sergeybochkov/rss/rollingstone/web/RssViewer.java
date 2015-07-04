@@ -1,7 +1,8 @@
 package com.sergeybochkov.rss.rollingstone.web;
 
+import com.rometools.rome.feed.atom.*;
 import com.sergeybochkov.rss.rollingstone.domain.Review;
-import com.sun.syndication.feed.atom.*;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.feed.AbstractAtomFeedView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+@Component(value = "rs_rss")
 public class RssViewer extends AbstractAtomFeedView {
     @Override
     protected void buildFeedMetadata(Map<String, Object> model, Feed feed, HttpServletRequest request) {

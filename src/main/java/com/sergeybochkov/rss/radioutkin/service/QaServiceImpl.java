@@ -2,11 +2,13 @@ package com.sergeybochkov.rss.radioutkin.service;
 
 import com.sergeybochkov.rss.radioutkin.dao.QaDao;
 import com.sergeybochkov.rss.radioutkin.domain.Qa;
+import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +47,8 @@ public class QaServiceImpl implements QaService {
     private static final String PROSPORT_URL = "http://prosport-online.ru/Utkin/conference";
 
     private static final Pattern pattern = Pattern.compile("^(.+) (пишет|отвечает) (\\d+).(\\d+).(\\d+) в (\\d+):(\\d+)$");
+
+    private static final Logger logger = Logger.getLogger(QaServiceImpl.class.getName());
 
     private String parseAuthor(String value) {
         Matcher matcher = pattern.matcher(value);
@@ -85,12 +89,17 @@ public class QaServiceImpl implements QaService {
     }
 
     @Transactional
+    @Scheduled(cron="0 */15 * * * ?")
     public void download() throws IOException {
         downloadFromRadioutkin();
         downloadFromProsport();
     }
 
     public void downloadFromRadioutkin() throws IOException {
+        int created = 0;
+        int dropped = 0;
+        logger.info("Start spawn RADIOUTKIN");
+
         Document doc = Jsoup.connect(RADIOUTKIN_URL).get();
         for (Element elem : doc.getElementsByClass("guest-book__item")){
             String link = elem.getElementsByClass("guest-book__post-link").get(0).attr("href");
@@ -110,11 +119,21 @@ public class QaServiceImpl implements QaService {
                 qa.setA_text(normalize(elem.getElementsByClass("guest-book-answer__message").text()));
 
                 add(qa);
+                ++created;
             }
+            else
+                ++dropped;
         }
+
+        logger.info("Created " + created + " elements");
+        logger.info("Dropped " + dropped + " elements");
     }
 
     public void downloadFromProsport() throws IOException {
+        int created = 0;
+        int dropped = 0;
+        logger.info("Start spawn PROSPORT");
+
         Document doc = Jsoup.connect(PROSPORT_URL).get();
         Elements elements = doc.getElementsByClass("q_block");
         for (int i = elements.size() - 1; i >= 0; --i) {
@@ -133,9 +152,16 @@ public class QaServiceImpl implements QaService {
             qa.setA_text(answer.children().get(1).text());
             qa.setUpdated(parseDate(answer.children().get(0).text()));
 
-            if (!find(qa))
+            if (!find(qa)) {
+                ++created;
                 add(qa);
+            }
+            else
+                ++dropped;
         }
+
+        logger.info("Created " + created + " elements");
+        logger.info("Dropped " + dropped + " elements");
     }
 
     public void clean() {

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Новости сериалов от LostFilm.TV</title>
+    <link rel="icon" type="image/png" th:href="@{favicons/lostfilm.ico}" />
+    <link rel="stylesheet" type="text/css" href="http://yandex.st/bootstrap/3.1.1/css/bootstrap.min.css"/>
+</head>
+<body>
+
+<div class="container">
+    <div class="col-md-8 col-md-offset-2">
+        <h2 class="page-header">Новости сериалов от LostFilm.TV</h2>
+        <div class="row" th:each="news : ${objects}">
+            <h3><a th:href="${news.url}" th:text="${news.title}"></a></h3>
+            <div class="col-md-3">
+                <img th:src="${news.imgUrl}"/>
+            </div>
+            <div class="col-md-9 text-justify">
+                <p th:utext="${news.text}"></p>
+                <small><em th:text="${#dates.format(news.date, 'HH:mm dd.MM.yyyy')}"></em></small>
+            </div>
+            <hr/>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
