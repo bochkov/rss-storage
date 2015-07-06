@@ -37,8 +37,6 @@ public class NewsServiceImpl implements NewsService {
     @Scheduled(cron="0 0 * * * ?")
     public void download() throws IOException, ParseException {
 
-        logger.info("Starting spawn");
-
         Connection.Response response = Jsoup.connect(url)
                 .userAgent(userAgent)
                 .execute();
@@ -103,8 +101,7 @@ public class NewsServiceImpl implements NewsService {
                 ++dropped;
         }
 
-        logger.info("Saved " + created + " elements");
-        logger.info("Dropped " + dropped + " elements");
+        logger.info(String.format("LostFilm: %s created, %s dropped", created, dropped));
     }
 
     @Override

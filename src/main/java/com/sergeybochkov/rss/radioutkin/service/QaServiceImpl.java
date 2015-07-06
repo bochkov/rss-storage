@@ -98,7 +98,6 @@ public class QaServiceImpl implements QaService {
     public void downloadFromRadioutkin() throws IOException {
         int created = 0;
         int dropped = 0;
-        logger.info("Start spawn RADIOUTKIN");
 
         Document doc = Jsoup.connect(RADIOUTKIN_URL).get();
         for (Element elem : doc.getElementsByClass("guest-book__item")){
@@ -125,14 +124,12 @@ public class QaServiceImpl implements QaService {
                 ++dropped;
         }
 
-        logger.info("Created " + created + " elements");
-        logger.info("Dropped " + dropped + " elements");
+        logger.info(String.format("RADIOUTKIN: %s created, %s dropped", created, dropped));
     }
 
     public void downloadFromProsport() throws IOException {
         int created = 0;
         int dropped = 0;
-        logger.info("Start spawn PROSPORT");
 
         Document doc = Jsoup.connect(PROSPORT_URL).get();
         Elements elements = doc.getElementsByClass("q_block");
@@ -160,8 +157,7 @@ public class QaServiceImpl implements QaService {
                 ++dropped;
         }
 
-        logger.info("Created " + created + " elements");
-        logger.info("Dropped " + dropped + " elements");
+        logger.info(String.format("PROSPORT: %s created, %s dropped", created, dropped));
     }
 
     public void clean() {

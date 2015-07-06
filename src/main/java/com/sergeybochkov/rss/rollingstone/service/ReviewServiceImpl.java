@@ -74,7 +74,6 @@ public class ReviewServiceImpl implements ReviewService {
     public void download() throws Exception {
         int created = 0;
         int dropped = 0;
-        logger.info("Starting spawn");
 
         Document doc = Jsoup.connect("http://rollingstone.ru/review/")
                 .userAgent("Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0")
@@ -110,8 +109,7 @@ public class ReviewServiceImpl implements ReviewService {
                 ++dropped;
         }
 
-        logger.info("Created " + created + " elements");
-        logger.info("Dropped " + dropped + " elements");
+        logger.info(String.format("RollingStone: %s created, %s dropped", created, dropped));
     }
 
     @Override

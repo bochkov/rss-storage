@@ -33,8 +33,6 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public void download() throws IOException {
 
-        logger.info("Starting spawn");
-
         Document doc = Jsoup.connect(url)
                 .userAgent("Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0")
                 .followRedirects(true)
@@ -58,8 +56,7 @@ public class PostServiceImpl implements PostService {
             }
         }
 
-        logger.info("Saved " + created + " elements");
-        logger.info("Dropped " + dropped + " elements");
+        logger.info(String.format("IT-Students: %s created, %s dropped", created, dropped));
     }
 
     private static final short POST_CREATED = 10;
