@@ -7,10 +7,7 @@ import org.springframework.web.servlet.view.feed.AbstractAtomFeedView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component(value = "lostfilm_rss")
 public class RssViewer extends AbstractAtomFeedView {
@@ -27,13 +24,13 @@ public class RssViewer extends AbstractAtomFeedView {
 
             Link link = new Link();
             link.setHref(news.getUrl());
-            entry.setAlternateLinks(Arrays.asList(link));
+            entry.setAlternateLinks(Collections.singletonList(link));
 
             Content content = new Content();
             content.setType("text/html");
             String value = "<img src='" + news.getImgUrl() + "'/><br/>" + news.getText();
             content.setValue(value);
-            entry.setContents(Arrays.asList(content));
+            entry.setContents(Collections.singletonList(content));
 
             entry.setTitle(news.getTitle());
             entryList.add(entry);

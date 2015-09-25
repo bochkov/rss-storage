@@ -7,10 +7,7 @@ import org.springframework.web.servlet.view.feed.AbstractAtomFeedView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component(value = "itstudents_rss")
 public class RssViewer extends AbstractAtomFeedView {
@@ -35,11 +32,11 @@ public class RssViewer extends AbstractAtomFeedView {
             Content content = new Content();
             content.setValue(post.getText());
             content.setType("html");
-            entry.setContents(Arrays.asList(content));
+            entry.setContents(Collections.singletonList(content));
 
             Link link = new Link();
             link.setHref(post.getUrl());
-            entry.setOtherLinks(Arrays.asList(link));
+            entry.setOtherLinks(Collections.singletonList(link));
 
             entryList.add(entry);
         }

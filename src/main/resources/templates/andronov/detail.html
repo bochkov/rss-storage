@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Конференция Андронова</title>
+    <link rel="stylesheet" type="text/css" href="http://yandex.st/bootstrap/3.1.1/css/bootstrap.min.css"/>
+</head>
+<body>
+
+<div class="container">
+    <div class="col-md-8 col-md-offset-2">
+        <h2 class="page-header">Конференция Андронова</h2>
+        <div class="qa" th:each="qa : ${objects}">
+            <h3>
+                <a th:if="${qa.link}" th:href="${qa.link}" th:inline="text">Вопрос # [[${qa.id}]]</a>
+                <span th:unless="${qa.link}" th:inline="text">Вопрос задает [[${qa.qAuthor}]]</span>
+            </h3>
+            <div class="q">
+                <blockquote>
+                    <p th:text="${qa.qText}"></p>
+                    <footer>
+                        <span th:text="${qa.qAuthor}"></span>, <em th:text="${#dates.format(qa.published, 'HH:mm dd.MM.yyyy')}"></em>
+                    </footer>
+                </blockquote>
+            </div>
+            <div class="a">
+                <blockquote class="blockquote-reverse">
+                    <p th:text="${qa.aText}"></p>
+                    <footer>
+                        <span th:text="${qa.aAuthor}"></span>
+                    </footer>
+                </blockquote>
+            </div>
+            <hr/>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
