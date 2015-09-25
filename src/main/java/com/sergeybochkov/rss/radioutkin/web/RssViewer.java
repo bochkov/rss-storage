@@ -8,10 +8,7 @@ import org.springframework.web.servlet.view.feed.AbstractAtomFeedView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component(value = "radioutkin_rss")
 public class RssViewer extends AbstractAtomFeedView {
@@ -31,7 +28,7 @@ public class RssViewer extends AbstractAtomFeedView {
             if (qa.getLink() != null) {
                 Link link = new Link();
                 link.setHref(qa.getLink());
-                entry.setAlternateLinks(Arrays.asList(link));
+                entry.setAlternateLinks(Collections.singletonList(link));
             }
 
             Person qAuthor = new Person();
@@ -55,7 +52,7 @@ public class RssViewer extends AbstractAtomFeedView {
             html += "</p>";
 
             content.setValue(html);
-            entry.setContents(Arrays.asList(content));
+            entry.setContents(Collections.singletonList(content));
 
             entry.setTitle("Вопрос от " + qa.getQ_author());
             entryList.add(entry);
