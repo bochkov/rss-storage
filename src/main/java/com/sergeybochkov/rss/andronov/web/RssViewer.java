@@ -63,7 +63,7 @@ public class RssViewer extends AbstractAtomFeedView {
     @SuppressWarnings("unchecked")
     protected void buildFeedMetadata(Map<String, Object> model, Feed feed, HttpServletRequest request) {
         AndQa qa = ((List<AndQa>)model.get("feed")).get(0);
-        feed.setTitle("Конференция Радио Уткин");
+        feed.setTitle("Конференция Андронова");
         feed.setUpdated(qa.getPublished());
         super.buildFeedMetadata(model, feed, request);
     }
