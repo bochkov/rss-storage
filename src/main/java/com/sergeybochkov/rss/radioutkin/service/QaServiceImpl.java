@@ -90,9 +90,23 @@ public class QaServiceImpl implements QaService {
 
     @Transactional
     @Scheduled(cron="0 */15 * * * ?")
-    public void download() throws IOException {
-        downloadFromRadioutkin();
-        downloadFromProsport();
+    public void download() {
+        new Thread(() -> {
+            try {
+                downloadFromRadioutkin();
+            }
+            catch (IOException ex) {
+                logger.warn(ex.getMessage(), ex);
+            }
+        }, "radioutkin-spawner").start();
+        new Thread(() -> {
+            try {
+                downloadFromProsport();
+            }
+            catch (IOException ex) {
+                logger.warn(ex.getMessage(), ex);
+            }
+        }, "prosport-online-spawner").start();
     }
 
     public void downloadFromRadioutkin() throws IOException {
