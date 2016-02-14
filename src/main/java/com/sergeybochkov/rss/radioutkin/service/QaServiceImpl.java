@@ -89,7 +89,7 @@ public class QaServiceImpl implements QaService {
     }
 
     @Transactional
-    @Scheduled(cron="0 */15 * * * ?")
+    //@Scheduled(cron="0 */15 * * * ?")
     public void download() {
         new Thread(() -> {
             try {
