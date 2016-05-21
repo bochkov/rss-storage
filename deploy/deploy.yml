@@ -2,7 +2,7 @@
 - hosts: 127.0.0.1
   tasks:
     - file: path=/tmp/rss-deploy state=directory
-    - copy: src=../target/rss-storage-1.7.jar dest=/tmp/rss-deploy/rss-storage.jar
+    - copy: src=../target/rss-storage-1.7.2.jar dest=/tmp/rss-deploy/rss-storage.jar
     - copy: src=Dockerfile dest=/tmp/rss-deploy/Dockerfile
 
     - name: stop and delete obsolete containers
@@ -30,7 +30,10 @@
         restart_policy: always
         state: running
         expose: 8080
-        ports: 8284:8080
+        links:
+          mongo:mongo
 
     - name: clean
-      shell: rm -rf /tmp/rss-deploy
+      file:
+        state: absent
+        path: /tmp/rss-deploy
