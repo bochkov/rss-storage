@@ -1,32 +1,33 @@
 ---
-- hosts: 127.0.0.1
+- hosts: server
   tasks:
     - file: path=/tmp/rss-deploy state=directory
-    - copy: src=../target/rss-storage-1.7.2.jar dest=/tmp/rss-deploy/rss-storage.jar
+    - copy: src=../build/libs/rss-storage-1.7.2.jar dest=/tmp/rss-deploy/rss-storage.jar
     - copy: src=Dockerfile dest=/tmp/rss-deploy/Dockerfile
 
     - name: stop and delete obsolete containers
       docker:
-        image: sb/rss-storage
+        image: sb-rss-storage
         name: rss-storage
         state: absent
 
     - name: delete docker image
       docker_image:
         path: /tmp/rss-deploy
-        name: sb/rss-storage
+        name: sb-rss-storage
         state: absent
 
     - name: build docker image
       docker_image:
         path: /tmp/rss-deploy
-        name: sb/rss-storage
-        state: build
+        name: sb-rss-storage
+        state: present
+        pull: no
 
     - name: app container
       docker:
         name: rss-storage
-        image: sb/rss-storage
+        image: sb-rss-storage
         restart_policy: always
         state: running
         expose: 8080
