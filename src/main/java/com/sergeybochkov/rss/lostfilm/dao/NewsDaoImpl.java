@@ -13,8 +13,12 @@ import java.util.List;
 @Repository
 public class NewsDaoImpl implements NewsDao {
 
+    private final MongoOperations mongoOperations;
+
     @Autowired
-    private MongoOperations mongoOperations;
+    public NewsDaoImpl(MongoOperations mongoOperations) {
+        this.mongoOperations = mongoOperations;
+    }
 
     @Override
     public void save(News news) {

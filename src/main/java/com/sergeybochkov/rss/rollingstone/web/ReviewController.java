@@ -12,11 +12,14 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/rolling-stone/")
 public class ReviewController {
 
+    private final ReviewService reviewService;
+    private final RssViewer rssViewer;
+
     @Autowired
-    private ReviewService reviewService;
-    @Autowired
-    @Qualifier("rs_rss")
-    private RssViewer rssViewer;
+    public ReviewController(ReviewService reviewService, @Qualifier("rs_rss") RssViewer rssViewer) {
+        this.reviewService = reviewService;
+        this.rssViewer = rssViewer;
+    }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index(){

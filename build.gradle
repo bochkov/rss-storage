@@ -30,7 +30,7 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-integration')
     compile('org.springframework.integration:spring-integration-feed')
 
-    compile('org.jsoup:jsoup:1.8.3')
+    compile('org.jsoup:jsoup:1.9.2')
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
@@ -41,5 +41,5 @@ jar {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.13'
+    gradleVersion = '2.14'
 }

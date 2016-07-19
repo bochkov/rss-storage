@@ -14,8 +14,12 @@ import java.util.List;
 @Repository
 public class QaDaoImpl implements QaDao {
 
+    private final MongoOperations mongoOperations;
+
     @Autowired
-    private MongoOperations mongoOperations;
+    public QaDaoImpl(MongoOperations mongoOperations) {
+        this.mongoOperations = mongoOperations;
+    }
 
     @Override
     public void save(Qa qa) {

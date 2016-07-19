@@ -7,7 +7,6 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -25,23 +24,27 @@ import java.util.regex.Pattern;
 @Service
 public class NewsServiceImpl implements NewsService {
 
+    private static final Logger LOG = Logger.getLogger(NewsServiceImpl.class.getName());
+
+    private static final String URL = "http://www.lostfilm.tv";
+    private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0";
+
+    private final NewsDao newsDao;
+
     @Autowired
-    private NewsDao newsDao;
-
-    private static final String url = "http://www.lostfilm.tv";
-    private static final String userAgent = "Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0";
-
-    private static final Logger logger = Logger.getLogger(NewsServiceImpl.class.getName());
+    public NewsServiceImpl(NewsDao newsDao) {
+        this.newsDao = newsDao;
+    }
 
     @Transactional
     @Scheduled(cron="0 0 * * * ?")
     public void download() throws IOException, ParseException {
 
-        Connection.Response response = Jsoup.connect(url)
-                .userAgent(userAgent)
+        Connection.Response response = Jsoup.connect(URL)
+                .userAgent(USER_AGENT)
                 .execute();
         if (response.statusCode() != 200)
-            logger.warn("Сервис недоступен");
+            LOG.warn("Сервис недоступен");
 
         Document doc = response.parse();
         Element contentBody = doc.getElementsByClass("content_body").get(0);
@@ -56,7 +59,7 @@ public class NewsServiceImpl implements NewsService {
             news.setTitle(title);
 
             element = element.nextElementSibling();
-            String imgUrl = url + element.children().get(0).attr("src");
+            String imgUrl = URL + element.children().get(0).attr("src");
             news.setImgUrl(imgUrl);
 
             element = element.nextElementSibling();
@@ -73,17 +76,17 @@ public class NewsServiceImpl implements NewsService {
             news.setDate(date);
 
             String postUrl = element.getElementsByClass("a_full_news").get(0).attr("href");
-            news.setUrl(url + postUrl);
+            news.setUrl(URL + postUrl);
 
             Document fullNews = Jsoup.connect(news.getUrl())
-                    .userAgent(userAgent)
+                    .userAgent(USER_AGENT)
                     .get();
             String html;
             Element body = fullNews.getElementsByClass("content_body").get(0);
             body.getElementsByAttributeValueContaining("style", "display:block").remove();
             html = body.html();
             if (html.contains("src=\"/"))
-                html = html.replaceAll("src=\"/", "src=\"" + url + "/");
+                html = html.replaceAll("src=\"/", "src=\"" + URL + "/");
             news.setText(html.trim());
 
             pattern = Pattern.compile(".*?id=(\\d+).*?");
@@ -101,7 +104,7 @@ public class NewsServiceImpl implements NewsService {
                 ++dropped;
         }
 
-        logger.info(String.format("LostFilm: %s created, %s dropped", created, dropped));
+        LOG.info(String.format("LostFilm: %s created, %s dropped", created, dropped));
     }
 
     @Override
@@ -109,6 +112,7 @@ public class NewsServiceImpl implements NewsService {
         return newsDao.getLatest();
     }
 
+    @Scheduled(cron = "0 0 1 * * ?")
     public void clean() {
         // todo clean old records
     }

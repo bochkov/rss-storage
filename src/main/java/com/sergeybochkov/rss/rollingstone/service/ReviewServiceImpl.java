@@ -24,8 +24,12 @@ public class ReviewServiceImpl implements ReviewService {
 
     private static final Logger logger = Logger.getLogger(ReviewServiceImpl.class.getName());
 
+    private final ReviewDao reviewDao;
+
     @Autowired
-    private ReviewDao reviewDao;
+    public ReviewServiceImpl(ReviewDao reviewDao) {
+        this.reviewDao = reviewDao;
+    }
 
     @Override
     public Review find(String id) {
@@ -117,6 +121,7 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewDao.getLatest();
     }
 
+    @Scheduled(cron = "0 0 1 * * ?")
     public void clean() {
         // todo clean old records
     }

@@ -3,25 +3,35 @@ package com.sergeybochkov.rss.radioutkin.service;
 import com.sergeybochkov.rss.radioutkin.dao.QaDao;
 import com.sergeybochkov.rss.radioutkin.domain.Qa;
 import org.apache.log4j.Logger;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
 public class QaServiceImpl implements QaService {
 
+    private static final String RADIOUTKIN_URL = "http://radioutkin.ru/conference/";
+    private static final String PROSPORT_URL = "http://prosport-online.ru/Utkin/conference";
+
+    private static final Pattern pattern = Pattern.compile("^(.+) (пишет|отвечает) (\\d+).(\\d+).(\\d+) в (\\d+):(\\d+)$");
+
+    private static final Logger LOG = Logger.getLogger(QaServiceImpl.class.getName());
+
+    private final QaDao qaDao;
+
     @Autowired
-    private QaDao qaDao;
+    public QaServiceImpl(QaDao qaDao) {
+        this.qaDao = qaDao;
+    }
 
     @Override
     public void add(Qa qa) {
@@ -42,13 +52,6 @@ public class QaServiceImpl implements QaService {
     public boolean find(Qa qa) {
         return qaDao.find(qa);
     }
-
-    private static final String RADIOUTKIN_URL = "http://radioutkin.ru/conference/";
-    private static final String PROSPORT_URL = "http://prosport-online.ru/Utkin/conference";
-
-    private static final Pattern pattern = Pattern.compile("^(.+) (пишет|отвечает) (\\d+).(\\d+).(\\d+) в (\\d+):(\\d+)$");
-
-    private static final Logger logger = Logger.getLogger(QaServiceImpl.class.getName());
 
     private String parseAuthor(String value) {
         Matcher matcher = pattern.matcher(value);
@@ -89,14 +92,14 @@ public class QaServiceImpl implements QaService {
     }
 
     @Transactional
-    //@Scheduled(cron="0 */15 * * * ?")
+    @Scheduled(cron="0 */15 * * * ?")
     public void download() {
         new Thread(() -> {
             try {
                 downloadFromRadioutkin();
             }
             catch (IOException ex) {
-                logger.warn(ex.getMessage(), ex);
+                LOG.warn(ex.getMessage(), ex);
             }
         }, "radioutkin-spawner").start();
         new Thread(() -> {
@@ -104,12 +107,13 @@ public class QaServiceImpl implements QaService {
                 downloadFromProsport();
             }
             catch (IOException ex) {
-                logger.warn(ex.getMessage(), ex);
+                LOG.warn(ex.getMessage(), ex);
             }
         }, "prosport-online-spawner").start();
     }
 
     public void downloadFromRadioutkin() throws IOException {
+        /*
         int created = 0;
         int dropped = 0;
 
@@ -138,10 +142,12 @@ public class QaServiceImpl implements QaService {
                 ++dropped;
         }
 
-        logger.info(String.format("RADIOUTKIN: %s created, %s dropped", created, dropped));
+        LOG.info(String.format("RADIOUTKIN: %s created, %s dropped", created, dropped));
+        */
     }
 
     public void downloadFromProsport() throws IOException {
+        /*
         int created = 0;
         int dropped = 0;
 
@@ -171,13 +177,17 @@ public class QaServiceImpl implements QaService {
                 ++dropped;
         }
 
-        logger.info(String.format("PROSPORT: %s created, %s dropped", created, dropped));
+        LOG.info(String.format("PROSPORT: %s created, %s dropped", created, dropped));
+        */
     }
 
+    @Scheduled(cron = "0 */30 * * * ?")
     public void clean() {
+        /*
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         cal.add(Calendar.MONTH, -2);
         qaDao.removeOldest(cal.getTime());
+        */
     }
 }

@@ -4,7 +4,6 @@ import com.sergeybochkov.rss.radioutkin.service.QaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -13,11 +12,14 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/radioutkin/")
 public class QaController {
 
+    private final QaService qaService;
+    private final RssViewer rssViewer;
+
     @Autowired
-    private QaService qaService;
-    @Autowired
-    @Qualifier(value = "radioutkin_rss")
-    private RssViewer rssViewer;
+    public QaController(QaService qaService, @Qualifier(value = "radioutkin_rss") RssViewer rssViewer) {
+        this.rssViewer = rssViewer;
+        this.qaService = qaService;
+    }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index() {
