@@ -12,11 +12,14 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("it-students")
 public class PostController {
 
+    private final PostService postService;
+    private final RssViewer rssViewer;
+
     @Autowired
-    private PostService postService;
-    @Autowired
-    @Qualifier(value = "itstudents_rss")
-    private RssViewer rssViewer;
+    public PostController(PostService postService, @Qualifier(value = "itstudents_rss") RssViewer rssViewer) {
+        this.postService = postService;
+        this.rssViewer = rssViewer;
+    }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index(){

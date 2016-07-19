@@ -22,12 +22,15 @@ import java.util.regex.Pattern;
 @Service
 public class AndQaServiceImpl implements AndQaService {
 
-    private static final Logger logger = Logger.getLogger(AndQaServiceImpl.class.getName());
-
+    private static final Logger LOG = Logger.getLogger(AndQaServiceImpl.class.getName());
     private static final String URL = "http://rsport.ru/conference/20130125/641604312.html?conference_id=657785746";
 
+    private final AndQaDao dao;
+
     @Autowired
-    private AndQaDao dao;
+    public AndQaServiceImpl(AndQaDao dao) {
+        this.dao = dao;
+    }
 
     @Override
     public void add(AndQa andQa) {
@@ -96,6 +99,6 @@ public class AndQaServiceImpl implements AndQaService {
                 ++dropped;
         }
 
-        logger.info(String.format("Конференция Андронова: %s created, %s dropped", created, dropped));
+        LOG.info(String.format("Конференция Андронова: %s created, %s dropped", created, dropped));
     }
 }

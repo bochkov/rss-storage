@@ -9,16 +9,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-
 @Controller
 @RequestMapping("/lostfilm/")
 public class NewsController {
 
+    private final NewsService newsService;
+    private final RssViewer rssViewer;
+
     @Autowired
-    private NewsService newsService;
-    @Autowired
-    @Qualifier("lostfilm_rss")
-    private RssViewer rssViewer;
+    public NewsController(NewsService newsService, @Qualifier("lostfilm_rss") RssViewer rssViewer) {
+        this.rssViewer = rssViewer;
+        this.newsService = newsService;
+    }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String index(Model model) {

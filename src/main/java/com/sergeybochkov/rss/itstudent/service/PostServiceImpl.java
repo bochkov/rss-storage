@@ -18,12 +18,15 @@ import java.util.stream.Collectors;
 @Service
 public class PostServiceImpl implements PostService {
 
+    private static final String URL = "http://it-students.net";
+    private static final Logger LOG = Logger.getLogger(PostServiceImpl.class.getName());
+
+    private final PostDao postDao;
+
     @Autowired
-    private PostDao postDao;
-
-    private static final String url = "http://it-students.net";
-
-    private static final Logger logger = Logger.getLogger(PostServiceImpl.class.getName());
+    public PostServiceImpl(PostDao postDao) {
+        this.postDao = postDao;
+    }
 
     @Override
     public List<Post> getLatest() {
@@ -33,7 +36,7 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public void download() throws IOException {
 
-        Document doc = Jsoup.connect(url)
+        Document doc = Jsoup.connect(URL)
                 .userAgent("Mozilla/5.0 (Windows NT 6.3; rv:36.0) Gecko/20100101 Firefox/36.0")
                 .followRedirects(true)
                 .get();
@@ -56,7 +59,7 @@ public class PostServiceImpl implements PostService {
             }
         }
 
-        logger.info(String.format("IT-Students: %s created, %s dropped", created, dropped));
+        LOG.info(String.format("IT-Students: %s created, %s dropped", created, dropped));
     }
 
     private static final short POST_CREATED = 10;
@@ -65,7 +68,7 @@ public class PostServiceImpl implements PostService {
     private short handlePost(Element element){
         Element elem = element.getElementsByTag("h2").get(0);
         String link = elem.child(0).attr("href");
-        if (postDao.findByUrl(url + link) == null) {
+        if (postDao.findByUrl(URL + link) == null) {
             String title = elem.child(0).text();
 
             Elements elems = element.getElementsByClass("field-items");
@@ -81,7 +84,7 @@ public class PostServiceImpl implements PostService {
 
             Post post = new Post();
             post.setTitle(title);
-            post.setUrl(url + link);
+            post.setUrl(URL + link);
             post.setText(text);
             post.setTags(tags);
             post.setTimestamp(System.currentTimeMillis());

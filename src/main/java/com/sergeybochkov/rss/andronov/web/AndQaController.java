@@ -12,11 +12,14 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/andronov/")
 public class AndQaController {
 
+    private final AndQaService service;
+    private final RssViewer rssViewer;
+
     @Autowired
-    private AndQaService service;
-    @Autowired
-    @Qualifier("andronov_rss")
-    private RssViewer rssViewer;
+    public AndQaController(AndQaService service, @Qualifier("andronov_rss") RssViewer rssViewer) {
+        this.rssViewer = rssViewer;
+        this.service = service;
+    }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index() {

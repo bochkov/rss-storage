@@ -14,8 +14,12 @@ import java.util.List;
 @Repository
 public class AndQaDaoImpl implements AndQaDao {
 
+    private final MongoOperations mongo;
+
     @Autowired
-    private MongoOperations mongo;
+    public AndQaDaoImpl(MongoOperations mongo) {
+        this.mongo = mongo;
+    }
 
     @Override
     public void save(AndQa andQa) {

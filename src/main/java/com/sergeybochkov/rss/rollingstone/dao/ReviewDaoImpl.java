@@ -13,8 +13,12 @@ import java.util.List;
 @Repository
 public class ReviewDaoImpl implements ReviewDao {
 
+    private final MongoOperations mongoOperations;
+
     @Autowired
-    private MongoOperations mongoOperations;
+    public ReviewDaoImpl(MongoOperations mongoOperations) {
+        this.mongoOperations = mongoOperations;
+    }
 
     @Override
     public List<Review> getLatest() {

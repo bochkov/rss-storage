@@ -13,8 +13,12 @@ import java.util.List;
 @Repository
 public class PostDaoImpl implements PostDao {
 
+    private final MongoOperations mongoOperations;
+
     @Autowired
-    private MongoOperations mongoOperations;
+    public PostDaoImpl(MongoOperations mongoOperations) {
+        this.mongoOperations = mongoOperations;
+    }
 
     @Override
     public List<Post> getLatest() {
