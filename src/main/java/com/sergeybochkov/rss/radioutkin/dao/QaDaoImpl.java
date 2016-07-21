@@ -42,8 +42,8 @@ public class QaDaoImpl implements QaDao {
     }
 
     @Override
-    public List<Qa> getLatest() {
-        Query query = new Query(Criteria.where("timestamp").exists(true)).with(new Sort(Sort.Direction.DESC, "timestamp")).limit(30);
+    public List<Qa> getLatest(int limit) {
+        Query query = new Query(Criteria.where("timestamp").exists(true)).with(new Sort(Sort.Direction.DESC, "timestamp")).limit(limit);
         return mongoOperations.find(query, Qa.class);
     }
 
