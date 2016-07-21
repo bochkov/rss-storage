@@ -96,6 +96,12 @@ public class Qa implements Serializable {
         this.timestamp = timestamp;
     }
 
+    public boolean isPublished() {
+        return a_text != null
+                && a_author != null
+                && updated != null;
+    }
+
     @Override
     public String toString() {
         return "Qa {" +

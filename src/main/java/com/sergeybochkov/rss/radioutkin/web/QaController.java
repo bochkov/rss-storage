@@ -24,14 +24,14 @@ public class QaController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView index() {
         ModelAndView modelAndView = new ModelAndView("radioutkin/detail");
-        modelAndView.addObject("objects", qaService.getLatest());
+        modelAndView.addObject("objects", qaService.getLatest(50));
         return modelAndView;
     }
 
     @RequestMapping(value = "/rss/", method = RequestMethod.GET)
     public ModelAndView rss() {
         ModelAndView modelAndView = new ModelAndView(rssViewer);
-        modelAndView.addObject("feed", qaService.getLatest());
+        modelAndView.addObject("feed", qaService.getLatest(100));
         return modelAndView;
     }
 

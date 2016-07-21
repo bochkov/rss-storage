@@ -10,7 +10,7 @@ public interface QaService {
 
     Qa get(String id);
 
-    List<Qa> getLatest();
+    List<Qa> getLatest(int limit);
 
     boolean find(Qa qa);
 }

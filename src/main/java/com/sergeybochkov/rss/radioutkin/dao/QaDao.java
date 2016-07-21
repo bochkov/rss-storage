@@ -15,7 +15,7 @@ public interface QaDao {
 
     void remove(String id);
 
-    List<Qa> getLatest();
+    List<Qa> getLatest(int limit);
 
     boolean find(Qa qa);
 
