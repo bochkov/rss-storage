@@ -17,17 +17,17 @@
             </h3>
             <div class="q">
                 <blockquote>
-                    <p th:text="${qa.q_text}"></p>
+                    <p th:utext="${qa.q_text}"></p>
                     <footer>
-                        <span th:text="${qa.q_author}"></span>, <em th:text="${#dates.format(qa.published, 'HH:mm dd.MM.yyyy')}"></em>
+                        <span th:utext="${qa.q_author}"></span>, <em th:text="${#dates.format(qa.published, 'HH:mm dd.MM.yyyy')}"></em>
                     </footer>
                 </blockquote>
             </div>
             <div class="a">
                 <blockquote class="blockquote-reverse">
-                    <p th:text="${qa.a_text}"></p>
+                    <p th:utext="${qa.a_text}"></p>
                     <footer>
-                        <span th:text="${qa.a_author}"></span>, <em th:text="${#dates.format(qa.updated, 'HH:mm dd.MM.yyyy')}"></em>
+                        <span th:utext="${qa.a_author}"></span>, <em th:text="${#dates.format(qa.updated, 'HH:mm dd.MM.yyyy')}"></em>
                     </footer>
                 </blockquote>
             </div>
