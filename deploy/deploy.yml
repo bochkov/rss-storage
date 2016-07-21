@@ -2,7 +2,7 @@
 - hosts: server
   tasks:
     - file: path=/tmp/rss-deploy state=directory
-    - copy: src=../build/libs/rss-storage-1.7.2.jar dest=/tmp/rss-deploy/rss-storage.jar
+    - copy: src=../build/libs/rss-storage-1.8.jar dest=/tmp/rss-deploy/rss-storage.jar
     - copy: src=Dockerfile dest=/tmp/rss-deploy/Dockerfile
 
     - name: stop and delete obsolete containers
