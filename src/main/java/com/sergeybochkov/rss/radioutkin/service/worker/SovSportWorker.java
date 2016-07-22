@@ -67,7 +67,8 @@ public class SovSportWorker implements Runnable {
                     Qa qa = new Qa();
                     handle(map.get(key), qa);
 
-                    if (service.get(qa.getId()) == null) {
+                    Qa inDbQa = service.get(qa.getId());
+                    if (inDbQa == null) {
                         if (qa.isPublished()) {
                             qa.setTimestamp(new Date());
                             service.add(qa);
@@ -77,9 +78,11 @@ public class SovSportWorker implements Runnable {
                             ++dropped;
                     }
                     else {
-                        ++updated;
-                        qa.setTimestamp(new Date());
-                        service.add(qa);
+                        if (!inDbQa.equals(qa)) {
+                            ++updated;
+                            qa.setTimestamp(new Date());
+                            service.add(qa);
+                        }
                     }
                 }
             } catch (ScriptException ex) {

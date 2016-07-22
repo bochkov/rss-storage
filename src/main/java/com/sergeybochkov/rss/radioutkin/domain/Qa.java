@@ -103,6 +103,29 @@ public class Qa implements Serializable {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Qa qa = (Qa) o;
+
+        if (q_text != null ? !q_text.equals(qa.q_text) : qa.q_text != null) return false;
+        if (q_author != null ? !q_author.equals(qa.q_author) : qa.q_author != null) return false;
+        if (a_text != null ? !a_text.equals(qa.a_text) : qa.a_text != null) return false;
+        return a_author != null ? a_author.equals(qa.a_author) : qa.a_author == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = q_text != null ? q_text.hashCode() : 0;
+        result = 31 * result + (q_author != null ? q_author.hashCode() : 0);
+        result = 31 * result + (a_text != null ? a_text.hashCode() : 0);
+        result = 31 * result + (a_author != null ? a_author.hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "Qa {" +
                 "id='" + id + '\'' +
