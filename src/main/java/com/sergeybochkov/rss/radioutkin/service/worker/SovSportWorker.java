@@ -53,6 +53,7 @@ public class SovSportWorker implements Runnable {
 
         int pageNum = 1;
         while (true) {
+            LOG.info("Processing page=" + pageNum);
             String commentsUrl = String.format("http://www.sovsport.ru/js/comment85_%s_%s.js?t=%s",
                     SOVSPORT_OBJECT, pageNum, System.currentTimeMillis());
             String comments = getContent(commentsUrl).split("];")[0] + "];";
@@ -83,15 +84,16 @@ public class SovSportWorker implements Runnable {
                             qa.setTimestamp(new Date());
                             service.add(qa);
                         }
+                        else
+                            ++dropped;
                     }
                 }
             } catch (ScriptException ex) {
-                ex.printStackTrace();
+                LOG.warn(ex);
             }
 
             ++pageNum;
         }
-
         LOG.info(String.format("SOVSPORT: %s created, %s dropped, %s updated", created, dropped, updated));
     }
 
