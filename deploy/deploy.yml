@@ -1,5 +1,6 @@
 ---
 - hosts: server
+  gather_facts: false
   tasks:
     - file: path=/tmp/rss-deploy state=directory
     - copy: src=../build/libs/rss-storage-1.8.jar dest=/tmp/rss-deploy/rss-storage.jar
