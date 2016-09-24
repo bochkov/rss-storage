@@ -9,5 +9,6 @@ RUN apk update && \
 VOLUME /tmp
 WORKDIR /opt
 ADD rss-storage.jar /opt/rss-storage.jar
+EXPOSE 8080
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
 CMD ["java", "-Xmx128m", "-Xss1m", "-Dfile.encoding=UTF-8", "-Djava.security.egd=file:/dev/./urandom", "-jar", "rss-storage.jar"]

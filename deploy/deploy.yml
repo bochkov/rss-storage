@@ -8,33 +8,21 @@
 
     - name: stop and delete obsolete containers
       docker:
-        image: sb-rss-storage
+        image: registry.gitlab.com/bochkovsa/rss-storage
         name: rss-storage
         state: absent
 
     - name: delete docker image
       docker_image:
         path: /tmp/rss-deploy
-        name: sb-rss-storage
+        name: registry.gitlab.com/bochkovsa/rss-storage
         state: absent
 
     - name: build docker image
       docker_image:
         path: /tmp/rss-deploy
-        name: sb-rss-storage
-        state: present
-        pull: no
-
-    - name: app container
-      docker:
-        name: rss-storage
-        image: sb-rss-storage
-        restart_policy: always
-        state: running
-        expose: 8080
-        links:
-          - mongo:mongo
-
+        name: registry.gitlab.com/bochkovsa/rss-storage
+        
     - name: clean
       file:
         state: absent

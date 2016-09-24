@@ -1,12 +1,6 @@
-
-group = 'com.sergeybochkov'
-
-apply 'plugin': 'java'
-apply 'plugin': 'spring-boot'
-
 buildscript {
     ext {
-        springBootVersion = '1.4.0.RELEASE'
+        springBootVersion = '1.4.1.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -16,8 +10,13 @@ buildscript {
     }
 }
 
+group = 'com.sergeybochkov'
+version = '1.8'
+
+apply 'plugin': 'java'
+apply 'plugin': 'spring-boot'
+
 sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
 
 repositories() {
     mavenCentral()
@@ -36,10 +35,6 @@ dependencies {
 }
 
 jar {
-    baseName = 'rss-storage'
-    version = '1.8'
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.14'
+    baseName = rootProject.name
+    version = version
 }
