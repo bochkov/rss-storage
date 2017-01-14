@@ -23,6 +23,12 @@
         path: /tmp/rss-deploy
         name: registry.gitlab.com/bochkovsa/rss-storage
         push: yes
+
+    - name: drop docker image
+      docker_image:
+        path: /tmp/rss-deploy
+        name: registry.gitlab.com/bochkovsa/rss-storage
+        state: absent
         
     - name: clean
       file:
