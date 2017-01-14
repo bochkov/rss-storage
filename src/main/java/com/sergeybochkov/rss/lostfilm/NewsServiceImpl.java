@@ -3,10 +3,11 @@ package com.sergeybochkov.rss.lostfilm;
 import com.sergeybochkov.rss.lostfilm.parsing.ArticleElement;
 import com.sergeybochkov.rss.lostfilm.parsing.BodyElement;
 import com.sergeybochkov.rss.lostfilm.parsing.DateElement;
-import org.apache.log4j.Logger;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,7 +22,7 @@ import java.util.List;
 @Service
 public final class NewsServiceImpl implements NewsService {
 
-    private static final Logger LOG = Logger.getLogger(NewsServiceImpl.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(NewsServiceImpl.class);
     private static final String URL = "http://www.lostfilm.tv";
 
     private final NewsDao newsDao;
