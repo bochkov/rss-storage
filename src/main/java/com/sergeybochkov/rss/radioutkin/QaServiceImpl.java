@@ -3,6 +3,7 @@ package com.sergeybochkov.rss.radioutkin;
 import com.sergeybochkov.rss.radioutkin.source.ProSportOnline;
 import com.sergeybochkov.rss.radioutkin.source.RadioUtkin;
 import com.sergeybochkov.rss.radioutkin.source.SovSport;
+import com.sergeybochkov.rss.store.StoreDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +23,12 @@ public final class QaServiceImpl implements QaService {
     private static final ExecutorService SERVICE = Executors.newFixedThreadPool(3);
 
     private final QaDao qaDao;
+    private final StoreDao storeDao;
 
     @Autowired
-    public QaServiceImpl(QaDao qaDao) {
+    public QaServiceImpl(QaDao qaDao, StoreDao storeDao) {
         this.qaDao = qaDao;
+        this.storeDao = storeDao;
     }
 
     @Override
@@ -37,7 +40,7 @@ public final class QaServiceImpl implements QaService {
     @Scheduled(cron = "0 0 * * * ?")
     public void downloadSovSport() {
         LOG.info("Starting SovSport");
-        SERVICE.submit(new SovSport(qaDao));
+        SERVICE.submit(new SovSport(qaDao, storeDao));
     }
 
     @Transactional

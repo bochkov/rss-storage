@@ -2,6 +2,8 @@ package com.sergeybochkov.rss.radioutkin.source;
 
 import com.sergeybochkov.rss.radioutkin.Qa;
 import com.sergeybochkov.rss.radioutkin.QaDao;
+import com.sergeybochkov.rss.store.Store;
+import com.sergeybochkov.rss.store.StoreDao;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +16,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,17 +33,20 @@ public final class SovSport extends AbstractSource {
     private static final Pattern DATE_PATTERN = Pattern.compile("(\\d+)\u00a0(.*),\\s+(\\d+):(\\d+)");
 
     private final QaDao qaDao;
+    private final StoreDao storeDao;
     private final ScriptEngine jsEngine;
 
-    public SovSport(QaDao qaDao) {
+    public SovSport(QaDao qaDao, StoreDao storeDao) {
         this.qaDao = qaDao;
+        this.storeDao = storeDao;
         this.jsEngine = new ScriptEngineManager().getEngineByName("JavaScript");
     }
 
     @Override
     public void download() throws IOException {
         int created = 0, dropped = 0, updated = 0;
-        int pageNum = 1;
+        Store store = storeDao.get("page");
+        int pageNum = store == null ? 1 : Integer.parseInt(store.getValue());
         while (true) {
             LOG.info("Processing page=" + pageNum);
             String commentsUrl = String.format(SOVSPORT_URL, SOVSPORT_OBJECT, pageNum, System.currentTimeMillis());
@@ -76,6 +84,7 @@ public final class SovSport extends AbstractSource {
             }
             ++pageNum;
         }
+        storeDao.save(new Store("page", String.format("%s", pageNum)));
         LOG.info(String.format("SOVSPORT: %s created, %s dropped, %s updated", created, dropped, updated));
     }
 
