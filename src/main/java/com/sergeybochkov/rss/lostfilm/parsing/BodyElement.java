@@ -39,7 +39,8 @@ public final class BodyElement implements SourceElement<String> {
 
     private String normalizeUrls(String html) {
         if (html.contains("src=\"/"))
-            html = html.replaceAll("src=\"/", "src=\"" + url + "/");
+            html = html.replaceAll("src=\"/",
+                    String.format("src=\"%s/", url.substring(0, url.lastIndexOf("/"))));
         return html;
     }
 }
