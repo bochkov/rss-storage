@@ -3,11 +3,11 @@
   gather_facts: false
   tasks:
     - file: path=/tmp/rss-deploy state=directory
-    - copy: src=../build/libs/rss-storage-1.8.jar dest=/tmp/rss-deploy/rss-storage.jar
+    - copy: src=../build/libs/rss-storage-1.8.1.jar dest=/tmp/rss-deploy/rss-storage.jar
     - copy: src=Dockerfile dest=/tmp/rss-deploy/Dockerfile
 
     - name: stop and delete obsolete containers
-      docker:
+      docker_container:
         image: registry.gitlab.com/bochkovsa/rss-storage
         name: rss-storage
         state: absent
@@ -22,6 +22,7 @@
       docker_image:
         path: /tmp/rss-deploy
         name: registry.gitlab.com/bochkovsa/rss-storage
+        push: yes
         
     - name: clean
       file:

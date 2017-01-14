@@ -1,9 +1,9 @@
 buildscript {
     ext {
-        springBootVersion = '1.4.1.RELEASE'
+        springBootVersion = '1.4.3.RELEASE'
     }
     repositories {
-        mavenCentral()
+        jcenter()
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
@@ -11,15 +11,16 @@ buildscript {
 }
 
 group = 'com.sergeybochkov'
-version = '1.8'
+version = '1.8.1'
 
 apply 'plugin': 'java'
-apply 'plugin': 'spring-boot'
+apply 'plugin': 'org.springframework.boot'
 
 sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
 
 repositories() {
-    mavenCentral()
+    jcenter()
 }
 
 dependencies {
@@ -29,7 +30,7 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-integration')
     compile('org.springframework.integration:spring-integration-feed')
 
-    compile('org.jsoup:jsoup:1.9.2')
+    compile('org.jsoup:jsoup:1.10.2')
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
