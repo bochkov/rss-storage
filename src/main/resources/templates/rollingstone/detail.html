@@ -12,7 +12,9 @@
         <h2 class="page-header">Рецензии RollingStone.Ru</h2>
         <div class="text-justify" th:each="rev : ${objects}">
             <h4><a th:href="${rev.url}" th:text="${rev.title}"></a>
-                <small class="pull-right" th:text="inline">[[${rev.author}]], [[${dates.format(rev.date, 'dd.MM.yyyy')}]]</small>
+                <small class="pull-right" th:inline="text">
+                    [[${rev.author}]], [[${#dates.format(rev.date, 'dd.MM.yyyy')}]]
+                </small>
             </h4>
             <p th:utext="${rev.text}"></p>
             <hr/>
