@@ -3,10 +3,11 @@ package com.sergeybochkov.rss.lostfilm;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Document(collection = News.COLLECTION_NAME)
-public final class News {
+public final class News implements Serializable {
 
     public static final String COLLECTION_NAME = "lostfilm_news";
 
