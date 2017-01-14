@@ -3,6 +3,7 @@ package com.sergeybochkov.rss.lostfilm.parsing;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -25,10 +26,9 @@ public final class BodyElement implements SourceElement<String> {
                     .execute();
             if (response.statusCode() == 200) {
                 Document doc = response.parse();
-                String html = doc.getElementsByClass("content_body").get(0)
-                        .getElementsByAttributeValueContaining("style", "display:block").remove()
-                        .html();
-                return normalizeUrls(html).trim();
+                Element html = doc.getElementsByClass("content_body").get(0);
+                html.getElementsByAttributeValueContaining("style", "display:block").remove();
+                return normalizeUrls(html.html()).trim();
             }
             throw new ParseException("Document not found", 1);
         }

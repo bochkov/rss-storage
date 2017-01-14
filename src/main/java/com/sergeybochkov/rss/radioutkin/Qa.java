@@ -84,7 +84,7 @@ public final class Qa implements Serializable {
         Content content = new Content();
         content.setType("text/html");
         content.setValue(String.format("<p><strong>%s</strong></p><p>%s, <em>%s</em></p><p>%s</p><p>%s, <em>%s</em></p>",
-                qText, qAuthor, DF.format(published), aText, aAuthor, updated));
+                qText, qAuthor, DF.format(published), aText, aAuthor, DF.format(updated)));
         entry.setContents(Collections.singletonList(content));
         entry.setTitle(String.format("Вопрос от %s", qAuthor));
         return entry;
