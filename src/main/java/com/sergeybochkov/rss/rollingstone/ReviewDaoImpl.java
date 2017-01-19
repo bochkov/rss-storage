@@ -30,7 +30,7 @@ public class ReviewDaoImpl implements ReviewDao {
     public Review find(String id) {
         return ops.findOne(
                 Query.query(
-                        Criteria.where(id).is(id)),
+                        Criteria.where("id").is(id)),
                 Review.class);
     }
 
