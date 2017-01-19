@@ -77,14 +77,15 @@ public final class SovSport extends AbstractSource {
                         }
                     }
                 }
-                else
+                else {
+                    storeDao.save(new Store("page", String.format("%s", pageNum)));
                     break;
+                }
             } catch (ScriptException ex) {
                 LOG.warn(ex.getMessage(), ex);
             }
             ++pageNum;
         }
-        storeDao.save(new Store("page", String.format("%s", pageNum)));
         LOG.info(String.format("SOVSPORT: %s created, %s dropped, %s updated", created, dropped, updated));
     }
 
@@ -133,7 +134,7 @@ public final class SovSport extends AbstractSource {
             }
         }
         catch (IOException ex) {
-            //
+            ex.printStackTrace();
         }
         return res;
     }
