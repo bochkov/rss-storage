@@ -76,11 +76,10 @@ public final class SovSport extends AbstractSource {
                                 ++dropped;
                         }
                     }
-                }
-                else {
                     storeDao.save(new Store("page", String.format("%s", pageNum)));
-                    break;
                 }
+                else
+                    break;
             } catch (ScriptException ex) {
                 LOG.warn(ex.getMessage(), ex);
             }
