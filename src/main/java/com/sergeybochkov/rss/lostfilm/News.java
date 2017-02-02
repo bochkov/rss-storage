@@ -13,7 +13,7 @@ import java.util.Date;
 @Document(collection = News.COLLECTION_NAME)
 public final class News implements Serializable {
 
-    public static final String COLLECTION_NAME = "lostfilm_news";
+    public static final String COLLECTION_NAME = "lostfilm_news2";
 
     @Id
     private String id;

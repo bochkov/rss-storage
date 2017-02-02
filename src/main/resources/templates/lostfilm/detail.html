@@ -3,8 +3,14 @@
 <head>
     <title>Новости сериалов от LostFilm.TV</title>
     <link rel="icon" type="image/png" th:href="@{/favicons/lostfilm.ico}" />
-    <link rel="stylesheet" type="text/css" href="http://yandex.st/bootstrap/3.1.1/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://yastatic.net/bootstrap/3.3.6/css/bootstrap.min.css"/>
 </head>
+<style>
+    .overlay-box, .bottom-pane {
+        font-size: 8pt;
+        color: lightgray;
+    }
+</style>
 <body>
 
 <div class="container">
@@ -13,11 +19,11 @@
         <div class="row" th:each="news : ${objects}">
             <h3><a th:href="${news.url}" th:text="${news.title}"></a></h3>
             <div class="col-md-3">
-                <img th:src="${news.imgUrl}"/>
+                <img src="" th:src="${news.imgUrl}" class="img-responsive"/>
             </div>
             <div class="col-md-9 text-justify">
                 <p th:utext="${news.text}"></p>
-                <small><em th:text="${#dates.format(news.date, 'HH:mm dd.MM.yyyy')}"></em></small>
+                <small><em th:text="${#dates.format(news.date, 'd MMMM yyyy')}"></em></small>
             </div>
             <hr/>
         </div>

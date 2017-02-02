@@ -1,46 +1,34 @@
 package com.sergeybochkov.rss.lostfilm.parsing;
 
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-import java.io.IOException;
 import java.text.ParseException;
 
 public final class BodyElement implements SourceElement<String> {
 
-    private final String url;
-    private final String userAgent;
+    private static final String[] IGNORED_CLASSES = {
+            "zoom-btn", "hor-spacer", "arrow"
+    };
 
-    public BodyElement(String url, String userAgent) {
-        this.url = url;
-        this.userAgent = userAgent;
+    private final Element element;
+    private final String baseUrl;
+
+    public BodyElement(Element element, String baseUrl) {
+        this.element = element;
+        for (String ignore : IGNORED_CLASSES)
+            this.element.getElementsByClass(ignore).remove();
+        this.baseUrl = baseUrl;
     }
 
     @Override
     public String parse() throws ParseException {
-        try {
-            Connection.Response response = Jsoup.connect(url)
-                    .userAgent(userAgent)
-                    .execute();
-            if (response.statusCode() == 200) {
-                Document doc = response.parse();
-                Element html = doc.getElementsByClass("content_body").get(0);
-                html.getElementsByAttributeValueContaining("style", "display:block").remove();
-                return normalizeUrls(html.html()).trim();
-            }
-            throw new ParseException("Document not found", 1);
-        }
-        catch (IOException ex) {
-            throw new ParseException("Document not found", 0);
-        }
-    }
-
-    private String normalizeUrls(String html) {
-        if (html.contains("src=\"/"))
-            html = html.replaceAll("src=\"/",
-                    String.format("src=\"%s/", url.substring(0, url.lastIndexOf("/"))));
-        return html;
+        // normalize urls
+        for (Element link : element.select("a"))
+            link.attr("href", String.format("%s%s", baseUrl, link.attr("href")));
+        // add bootstrap class to img
+        for (Element img : element.select("img"))
+            img.addClass("img-responsive");
+        return element.html();
     }
 }
