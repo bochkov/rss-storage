@@ -6,10 +6,11 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public final class DateElement implements SourceElement<Date> {
 
-    private static final DateFormat DF = new SimpleDateFormat("dd MMMM yyyy");
+    private static final DateFormat DF = new SimpleDateFormat("dd MMMM yyyy", new Locale("ru"));
 
     private final Element element;
 
