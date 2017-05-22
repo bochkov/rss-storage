@@ -79,9 +79,10 @@ public final class SovSport extends AbstractSource {
                     storeDao.save(new Store("page", String.format("%s", pageNum)));
                 }
                 else
-                    break;
+                    throw new ScriptException("No more arr");
             } catch (ScriptException ex) {
                 LOG.warn(ex.getMessage(), ex);
+                break;
             }
             ++pageNum;
         }
@@ -123,19 +124,19 @@ public final class SovSport extends AbstractSource {
     }
 
     private String getContent(String url) {
-        String res = "";
+        StringBuilder res = new StringBuilder();
         try {
             HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
                 String line;
                 while ((line = reader.readLine()) != null)
-                    res += line;
+                    res.append(line);
             }
         }
         catch (IOException ex) {
             ex.printStackTrace();
         }
-        return res;
+        return res.toString();
     }
 
     private Date getDate(String value) {
