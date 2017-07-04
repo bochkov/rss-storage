@@ -37,7 +37,7 @@ public final class NewsServiceImpl implements NewsService {
     }
 
     @Transactional
-    @Scheduled(cron="0 0 * * * ?")
+    @Scheduled(cron = "0 0 * * * ?")
     public void download() throws IOException, ParseException {
         Connection.Response response = Jsoup
                 .connect(String.format("%s/news/", URL))
@@ -57,11 +57,9 @@ public final class NewsServiceImpl implements NewsService {
                     if (!newsDao.exists(news)) {
                         newsDao.save(news);
                         ++created;
-                    }
-                    else
+                    } else
                         ++dropped;
-                }
-                catch (ParseException ex) {
+                } catch (ParseException ex) {
                     LOG.warn(String.format("Пропускаем %s: %s", url, ex.getMessage()));
                     ++dropped;
                 }
@@ -86,11 +84,10 @@ public final class NewsServiceImpl implements NewsService {
             if (response.statusCode() == 200) {
                 try {
                     News news = extractData(response.parse(), currentUrl);
-                    if (news != null && !newsDao.exists(news)) {
+                    if (!newsDao.exists(news)) {
                         newsDao.save(news);
                     }
-                }
-                catch (IOException | ParseException ex) {
+                } catch (IOException | ParseException ex) {
                     LOG.warn(String.format("Пропускаем %s: %s", currentUrl, ex.getMessage()));
                 }
             }
@@ -108,7 +105,7 @@ public final class NewsServiceImpl implements NewsService {
                 new ArticleElement(url).parse(),
                 new DateElement(headers.get(0).getElementsByClass("date").get(0)).parse(),
                 headers.get(0).getElementsByClass("title").get(0).text(),
-                new BodyElement(bodies.get(0), url).parse(),
+                new BodyElement(bodies.get(0), URL).parse(),
                 url,
                 String.format("https:%s", headers.get(0).getElementsByClass("thumb").get(0).attr("src")));
     }
