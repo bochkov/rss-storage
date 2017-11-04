@@ -22,6 +22,6 @@ after_success:
   - export PATH=$PATH:$HOME/.local/bin
   - eval $(aws ecr get-login --region us-east-1)
   - ./gradlew clean build
-  - docker build -t tasks .
+  - docker build -t rss-storage .
   - docker tag rss-storage:latest 902382300595.dkr.ecr.us-east-1.amazonaws.com/rss-storage:latest
   - docker push 902382300595.dkr.ecr.us-east-1.amazonaws.com/rss-storage:latest
