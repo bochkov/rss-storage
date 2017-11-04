@@ -37,7 +37,7 @@ public final class QaServiceImpl implements QaService {
     }
 
     @Transactional
-    @Scheduled(cron = "0 0 * * * ?")
+    //@Scheduled(cron = "0 0 * * * ?")
     public void downloadSovSport() {
         LOG.info("Starting SovSport");
         SERVICE.submit(new SovSport(qaDao, storeDao));

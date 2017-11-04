@@ -1,6 +1,5 @@
 package com.sergeybochkov.rss.lostfilm.parsing;
 
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import java.text.ParseException;
