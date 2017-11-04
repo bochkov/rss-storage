@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '1.5.4.RELEASE'
+        springBootVersion = '1.5.8.RELEASE'
     }
     repositories {
         jcenter()
@@ -11,7 +11,7 @@ buildscript {
 }
 
 group = 'com.sergeybochkov'
-version = '1.9.2'
+version = '1.9.3'
 
 apply 'plugin': 'java'
 apply 'plugin': 'org.springframework.boot'
@@ -30,7 +30,7 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-integration')
     compile('org.springframework.integration:spring-integration-feed')
 
-    compile('org.jsoup:jsoup:1.10.2')
+    compile('org.jsoup:jsoup:1.10.3')
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
