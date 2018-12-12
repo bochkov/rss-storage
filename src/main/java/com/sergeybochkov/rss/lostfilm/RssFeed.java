@@ -17,7 +17,7 @@ public final class RssFeed extends AbstractAtomFeedView {
     @Override
     protected List<Entry> buildFeedEntries(Map<String, Object> objectMap,
                                            HttpServletRequest request,
-                                           HttpServletResponse response) throws Exception {
+                                           HttpServletResponse response) {
         List objects = (List) objectMap.get("feed");
         List<Entry> entries = new ArrayList<>(objects.size());
         for (Object object : objects)

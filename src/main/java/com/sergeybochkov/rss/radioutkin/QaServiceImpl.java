@@ -16,7 +16,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Service
-public final class QaServiceImpl implements QaService {
+public class QaServiceImpl implements QaService {
 
     private static final Logger LOG = LoggerFactory.getLogger(QaServiceImpl.class);
 

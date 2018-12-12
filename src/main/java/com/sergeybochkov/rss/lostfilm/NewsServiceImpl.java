@@ -21,7 +21,7 @@ import java.text.ParseException;
 import java.util.List;
 
 @Service
-public final class NewsServiceImpl implements NewsService {
+public class NewsServiceImpl implements NewsService {
 
     private static final Logger LOG = LoggerFactory.getLogger(NewsServiceImpl.class);
     private static final String URL = "https://www.lostfilm.tv";
@@ -38,7 +38,7 @@ public final class NewsServiceImpl implements NewsService {
 
     @Transactional
     @Scheduled(cron = "0 0 * * * ?")
-    public void download() throws IOException, ParseException {
+    public void download() throws IOException {
         Connection.Response response = Jsoup
                 .connect(String.format("%s/news/", URL))
                 .userAgent(userAgent)
@@ -72,7 +72,7 @@ public final class NewsServiceImpl implements NewsService {
 
     @SuppressWarnings("unused")
     @Transactional
-    public void downloadAll(String lastUrl) throws IOException, ParseException {
+    public void downloadAll(String lastUrl) throws IOException {
         String currentUrl = "";
         int id = 1;
         while (!currentUrl.equalsIgnoreCase(lastUrl)) {
@@ -94,7 +94,7 @@ public final class NewsServiceImpl implements NewsService {
         }
     }
 
-    private News extractData(Document doc, String url) throws IOException, ParseException {
+    private News extractData(Document doc, String url) throws ParseException {
         Elements headers = doc.getElementsByClass("news-header");
         if (headers.isEmpty())
             throw new ParseException("no page", 1);

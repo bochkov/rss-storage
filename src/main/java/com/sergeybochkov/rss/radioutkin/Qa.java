@@ -12,10 +12,7 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Document(collection = Qa.COLLECTION_NAME)
 public final class Qa implements Serializable {
@@ -27,7 +24,7 @@ public final class Qa implements Serializable {
     private static final DateFormat DF = new SimpleDateFormat("d MMMM yyyy HH:mm", new DateFormatSymbols() {
         @Override
         public String[] getMonths() {
-            return MONTHS.toArray(new String[MONTHS.size()]);
+            return MONTHS.toArray(new String[0]);
         }
     });
 
@@ -174,10 +171,10 @@ public final class Qa implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Qa qa = (Qa) o;
-        if (qText != null ? !qText.equals(qa.qText) : qa.qText != null) return false;
-        if (qAuthor != null ? !qAuthor.equals(qa.qAuthor) : qa.qAuthor != null) return false;
-        if (aText != null ? !aText.equals(qa.aText) : qa.aText != null) return false;
-        return aAuthor != null ? aAuthor.equals(qa.aAuthor) : qa.aAuthor == null;
+        if (!Objects.equals(qText, qa.qText)) return false;
+        if (!Objects.equals(qAuthor, qa.qAuthor)) return false;
+        if (!Objects.equals(aText, qa.aText)) return false;
+        return Objects.equals(aAuthor, qa.aAuthor);
 
     }
 

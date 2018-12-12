@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public final class ReviewServiceImpl implements ReviewService {
+public class ReviewServiceImpl implements ReviewService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ReviewServiceImpl.class);
 

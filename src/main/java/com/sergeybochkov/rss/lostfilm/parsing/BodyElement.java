@@ -21,7 +21,7 @@ public final class BodyElement implements SourceElement<String> {
     }
 
     @Override
-    public String parse() throws ParseException {
+    public String parse() {
         // normalize urls
         for (Element link : element.select("a"))
             link.attr("href", String.format("%s%s", baseUrl, link.attr("href")));
