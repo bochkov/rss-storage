@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,13 +27,13 @@ public class ReviewServiceImpl implements ReviewService {
     private static final Logger LOG = LoggerFactory.getLogger(ReviewServiceImpl.class);
 
     private static final String URL = "http://rollingstone.ru/review/";
-    private static final DateFormat DF = new SimpleDateFormat("dd MMMM yyyy", new DateFormatSymbols() {
+    private static final DateFormatSymbols DF_SYM = new DateFormatSymbols() {
         @Override
         public String[] getMonths() {
             return new String[]{"Января", "Февраля", "Марта", "Апреля", "Мая", "Июня",
                     "Июля", "Августа", "Сентября", "Октября", "Ноября", "Декабря"};
         }
-    });
+    };
 
     private final Map<Integer, String> ratingMap = new HashMap<>();
     private final ReviewDao reviewDao;
@@ -63,24 +62,25 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Transactional
     @Scheduled(cron = "0 0 */3 * * ?")
-    public void download() throws Exception {
+    public void download() throws IOException, ParseException {
         Connection.Response response = Jsoup.connect(URL)
                 .userAgent(userAgent)
                 .followRedirects(true)
                 .execute();
         if (response.statusCode() == 200) {
-            int created = 0, dropped = 0;
+            int created = 0;
+            int dropped = 0;
             for (Element article : response.parse().getElementsByClass("tbl-review-inner")) {
                 String url = String.format("http://rollingstone.ru%s",
                         article.getElementsByClass("ttl01").get(0).child(0).attr("href"));
-                String id = url.substring(url.lastIndexOf("/") + 1, url.lastIndexOf("."));
+                String id = url.substring(url.lastIndexOf('/') + 1, url.lastIndexOf('.'));
                 if (reviewDao.find(id) == null) {
                     reviewDao.add(extractData(url, id));
                     ++created;
                 } else
                     ++dropped;
             }
-            LOG.info(String.format("RollingStone: %s created, %s dropped", created, dropped));
+            LOG.info("RollingStone: {} created, {} dropped", created, dropped);
         }
     }
 
@@ -103,10 +103,14 @@ public class ReviewServiceImpl implements ReviewService {
             builder.append(el.getElementsByTag("img").get(0));
         builder.append(doc.getElementsByClass("block-content").get(0).html());
 
-        return new Review(id, url,
+        return new Review(
+                id,
+                url,
                 doc.getElementsByClass("block-root").get(0).children().get(1).text(),
                 builder.toString(),
                 doc.getElementsByClass("block-data-author").get(0).children().get(2).text(),
-                DF.parse(doc.getElementsByClass("block-data-author").get(0).children().get(0).text()));
+                new SimpleDateFormat("dd MMMM yyyy", DF_SYM)
+                        .parse(doc.getElementsByClass("block-data-author").get(0).children().get(0).text())
+        );
     }
 }

@@ -8,5 +8,5 @@ public interface NewsDao {
 
     List<News> getLatest();
 
-    boolean exists(News news);
+    boolean notExists(News news);
 }

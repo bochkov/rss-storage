@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 public final class ArticleElement implements SourceElement<Integer> {
 
-    private final static Pattern PATTERN = Pattern.compile("/news/id(\\d+)");
+    private static final Pattern PATTERN = Pattern.compile("/news/id(\\d+)");
 
     private final String url;
 

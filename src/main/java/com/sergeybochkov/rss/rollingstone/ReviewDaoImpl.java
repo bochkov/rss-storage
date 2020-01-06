@@ -21,17 +21,16 @@ public class ReviewDaoImpl implements ReviewDao {
 
     @Override
     public List<Review> getLatest(int limit) {
-        return ops.find(new Query()
-                .with(new Sort(Sort.Direction.DESC, "date"))
-                .limit(limit), Review.class);
+        Query query = new Query()
+                .with(Sort.by(Sort.Direction.DESC, "date"))
+                .limit(limit);
+        return ops.find(query, Review.class);
     }
 
     @Override
     public Review find(String id) {
-        return ops.findOne(
-                Query.query(
-                        Criteria.where("id").is(id)),
-                Review.class);
+        Query query = Query.query(Criteria.where("id").is(id));
+        return ops.findOne(query, Review.class);
     }
 
     @Override

@@ -2,8 +2,6 @@ package com.sergeybochkov.rss.lostfilm.parsing;
 
 import org.jsoup.nodes.Element;
 
-import java.text.ParseException;
-
 public final class BodyElement implements SourceElement<String> {
 
     private static final String[] IGNORED_CLASSES = {

@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.text.ParseException;
 import java.util.List;
 
@@ -24,27 +26,38 @@ import java.util.List;
 public class NewsServiceImpl implements NewsService {
 
     private static final Logger LOG = LoggerFactory.getLogger(NewsServiceImpl.class);
-    private static final String URL = "https://www.lostfilm.tv";
+    private static final String URL = "https://lostfilm.tv";
 
     private final NewsDao newsDao;
 
-    @Value("http.user-agent")
+    @Value("${rss.user-agent}")
     private String userAgent;
+    @Value("${rss.proxy-host}")
+    private String proxyHost;
+    @Value("${rss.proxy-port}")
+    private Integer proxyPort;
 
     @Autowired
     public NewsServiceImpl(NewsDao newsDao) {
         this.newsDao = newsDao;
     }
 
+    private Connection connection(String url) {
+        Connection con = Jsoup.connect(url).userAgent(userAgent);
+        if (proxyHost != null && !proxyHost.isEmpty() && proxyPort != null && proxyPort > 0) {
+            Proxy proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress(proxyHost, proxyPort));
+            return con.proxy(proxy);
+        }
+        return con;
+    }
+
     @Transactional
     @Scheduled(cron = "0 0 * * * ?")
     public void download() throws IOException {
-        Connection.Response response = Jsoup
-                .connect(String.format("%s/news/", URL))
-                .userAgent(userAgent)
-                .execute();
+        Connection.Response response = connection(String.format("%s/news/", URL)).execute();
         if (response.statusCode() == 200) {
-            int created = 0, dropped = 0;
+            int created = 0;
+            int dropped = 0;
             for (Element element : response.parse()
                     .getElementsByClass("row")) {
                 String url = String.format("%s%s", URL, element.attr("href"));
@@ -54,7 +67,7 @@ public class NewsServiceImpl implements NewsService {
                         .execute();
                 try {
                     News news = extractData(res.parse(), url);
-                    if (!newsDao.exists(news)) {
+                    if (newsDao.notExists(news)) {
                         newsDao.save(news);
                         ++created;
                     } else
@@ -64,7 +77,7 @@ public class NewsServiceImpl implements NewsService {
                     ++dropped;
                 }
             }
-            LOG.info(String.format("LostFilm: %s created, %s dropped", created, dropped));
+            LOG.info("LostFilm: {} created, {} dropped", created, dropped);
         } else {
             LOG.warn("Сервис недоступен");
         }
@@ -77,14 +90,11 @@ public class NewsServiceImpl implements NewsService {
         int id = 1;
         while (!currentUrl.equalsIgnoreCase(lastUrl)) {
             currentUrl = String.format("%s/news/id%s", URL, ++id);
-            Connection.Response response = Jsoup
-                    .connect(currentUrl)
-                    .userAgent(userAgent)
-                    .execute();
+            Connection.Response response = connection(currentUrl).execute();
             if (response.statusCode() == 200) {
                 try {
                     News news = extractData(response.parse(), currentUrl);
-                    if (!newsDao.exists(news)) {
+                    if (newsDao.notExists(news)) {
                         newsDao.save(news);
                     }
                 } catch (IOException | ParseException ex) {
@@ -101,13 +111,14 @@ public class NewsServiceImpl implements NewsService {
         Elements bodies = doc.getElementsByClass("news_text_block");
         if (bodies.isEmpty())
             throw new ParseException("no page", 2);
-        return new News(
-                new ArticleElement(url).parse(),
-                new DateElement(headers.get(0).getElementsByClass("date").get(0)).parse(),
-                headers.get(0).getElementsByClass("title").get(0).text(),
-                new BodyElement(bodies.get(0), URL).parse(),
-                url,
-                String.format("https:%s", headers.get(0).getElementsByClass("thumb").get(0).attr("src")));
+        News news = new News();
+        news.setArticleId(new ArticleElement(url).parse());
+        news.setDate(new DateElement(headers.get(0).getElementsByClass("date").get(0)).parse());
+        news.setTitle(headers.get(0).getElementsByClass("title").get(0).text());
+        news.setText(new BodyElement(bodies.get(0), URL).parse());
+        news.setUrl(url);
+        news.setImgUrl("https:" + headers.get(0).getElementsByClass("thumb").get(0).attr("src"));
+        return news;
     }
 
     @Override

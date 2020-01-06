@@ -25,16 +25,14 @@ public class NewsDaoImpl implements NewsDao {
     }
 
     @Override
-    public boolean exists(News news) {
-        return !ops.find(
-                Query.query(
-                        Criteria.where("articleId").is(news.getArticleId())), News.class).isEmpty();
+    public boolean notExists(News news) {
+        Query query = Query.query(Criteria.where("articleId").is(news.getArticleId()));
+        return ops.find(query, News.class).isEmpty();
     }
 
     @Override
     public List<News> getLatest() {
-        return ops.find(
-                new Query().with(new Sort(Sort.Direction.DESC, "date")).limit(20),
-                News.class);
+        Query query = new Query().with(Sort.by(Sort.Direction.DESC, "date")).limit(20);
+        return ops.find(query, News.class);
     }
 }

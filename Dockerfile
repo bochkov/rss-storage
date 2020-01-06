@@ -8,7 +8,7 @@ RUN apk update && \
   chmod +x /usr/local/bin/dumb-init
 VOLUME /tmp
 WORKDIR /opt
-ADD build/libs/rss-storage-1.9.3.jar /opt/rss-storage.jar
+ADD build/libs/rss-storage-1.10.jar /opt/rss-storage.jar
 EXPOSE 8080
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
 CMD ["java", "-Xmx128m", "-Xss1m", "-Dfile.encoding=UTF-8", "-Djava.security.egd=file:/dev/./urandom", "-jar", "rss-storage.jar"]

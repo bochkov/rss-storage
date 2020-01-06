@@ -1,9 +1,9 @@
 plugins {
-    id 'org.springframework.boot' version '2.1.1.RELEASE'
+    id 'org.springframework.boot' version '2.2.2.RELEASE'
 }
 
 group = 'com.sergeybochkov'
-version = '1.9.3'
+version = '1.10'
 
 apply 'plugin': 'java'
 apply 'plugin': 'io.spring.dependency-management'
@@ -22,12 +22,13 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-integration')
     compile('org.springframework.integration:spring-integration-feed')
 
-    compile('org.jsoup:jsoup:1.11.3')
+    compileOnly 'org.projectlombok:lombok:1.18.10'
+    annotationProcessor 'org.projectlombok:lombok:1.18.10'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    compile('org.jsoup:jsoup:1.12.1')
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
-jar {
-    baseName = rootProject.name
-    version = version
-}
+compileJava.dependsOn(processResources)
