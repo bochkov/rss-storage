@@ -58,13 +58,9 @@ public class NewsServiceImpl implements NewsService {
         if (response.statusCode() == 200) {
             int created = 0;
             int dropped = 0;
-            for (Element element : response.parse()
-                    .getElementsByClass("row")) {
+            for (Element element : response.parse().getElementsByClass("row")) {
                 String url = String.format("%s%s", URL, element.attr("href"));
-                Connection.Response res = Jsoup
-                        .connect(url)
-                        .userAgent(userAgent)
-                        .execute();
+                Connection.Response res = connection(url).execute();
                 try {
                     News news = extractData(res.parse(), url);
                     if (newsDao.notExists(news)) {
@@ -80,27 +76,6 @@ public class NewsServiceImpl implements NewsService {
             LOG.info("LostFilm: {} created, {} dropped", created, dropped);
         } else {
             LOG.warn("Сервис недоступен");
-        }
-    }
-
-    @SuppressWarnings("unused")
-    @Transactional
-    public void downloadAll(String lastUrl) throws IOException {
-        String currentUrl = "";
-        int id = 1;
-        while (!currentUrl.equalsIgnoreCase(lastUrl)) {
-            currentUrl = String.format("%s/news/id%s", URL, ++id);
-            Connection.Response response = connection(currentUrl).execute();
-            if (response.statusCode() == 200) {
-                try {
-                    News news = extractData(response.parse(), currentUrl);
-                    if (newsDao.notExists(news)) {
-                        newsDao.save(news);
-                    }
-                } catch (IOException | ParseException ex) {
-                    LOG.warn(String.format("Пропускаем %s: %s", currentUrl, ex.getMessage()));
-                }
-            }
         }
     }
 
